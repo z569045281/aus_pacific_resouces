@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aus Pacific Resources | Global Resource Management</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Google Fonts (Montserrat for that wide, elegant, luxury geometric look) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Configure Tailwind theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        ausblack: '#0c0c0c',
+                        ausgray: '#161616',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0c0c0c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            /* Removed overflow: hidden so natural scrolling works */
+        }
+        
+        /* Custom sleek scrollbar */
+        ::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0c0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        
+        /* Typography refinements */
+        .luxury-title {
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            word-break: break-word; /* Prevents extremely long words from breaking the layout */
+        }
+        
+        /* Text shadow only for the hero section now, as other sections have clean dark backgrounds */
+        .hero-text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 4px 40px rgba(0,0,0,0.9);
+        }
+
+        .luxury-text {
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+        }
+
+        .luxury-button {
+            letter-spacing: 0.2em;
+            transition: all 0.4s ease;
+        }
+        
+        .luxury-button:hover {
+            transform: scale(1.05);
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .video-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.6) 100%);
+        }
+
+        /* Navigation Dots */
+        .nav-dot {
+            width: 4px;
+            height: 4px;
+            background-color: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-dot.active {
+            background-color: #fff;
+            transform: scale(1.5);
+        }
+        .nav-dot.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+        }
+
+        /* Subtle Fade In Animation */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .is-visible .fade-in-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        
+        /* Editorial Image Hover Effect */
+        .editorial-media img, .editorial-media video {
+            transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .editorial-media:hover img, .editorial-media:hover video {
+            transform: scale(1.03);
+        }
+
+        /* Split-panel nav overlay (RR style) */
+        #nav-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #nav-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .nav-left {
+            transform: translateX(-20px);
+            transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #nav-overlay.open .nav-left {
+            transform: translateX(0);
+        }
+        .nav-right {
+            opacity: 0;
+            transition: opacity 0.7s ease 0.2s;
+        }
+        #nav-overlay.open .nav-right {
+            opacity: 1;
+        }
+        .nav-overlay-link {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        .nav-overlay-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.35);
+            transition: width 0.35s ease;
+        }
+        .nav-overlay-link:hover { color: rgba(255,255,255,0.45); }
+        .nav-overlay-link:hover::after { width: 100%; }
+        #nav-overlay.open .nav-overlay-link:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0.10s; }
+        #nav-overlay.open .nav-overlay-link:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.16s; }
+        #nav-overlay.open .nav-overlay-link:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 0.22s; }
+        #nav-overlay.open .nav-overlay-link:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 0.28s; }
+        #nav-overlay.open .nav-overlay-link:nth-child(5) { opacity:1; transform:translateY(0); transition-delay: 0.34s; }
+
+        /* Gallery horizontal scroll */
+        #gallery-track { -ms-overflow-style: none; scrollbar-width: none; }
+        #gallery-track::-webkit-scrollbar { display: none; }
+        #gallery-track.is-grabbing { cursor: grabbing !important; }
+        .gallery-card video {
+            transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .gallery-card:hover video { transform: scale(1.05); }
+
+        /* Section divider glow line */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
+            position: relative;
+        }
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            inset: -2px 0;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent);
+            filter: blur(4px);
+        }
+
+        /* Scroll-snap for first 3 fullscreen panels */
+        html { scroll-snap-type: y proximity; }
+        .snap-panel {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        /* Panel overlay — bottom-heavy dark gradient */
+        .panel-overlay-bottom {
+            background: linear-gradient(to top, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.10) 100%);
+        }
+        /* Panel overlay — left-heavy dark gradient */
+        .panel-overlay-left {
+            background: linear-gradient(105deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.05) 100%);
+        }
+
+        /* Hero title ultra-thin */
+        .hero-title {
+            font-weight: 200;
+            letter-spacing: 0.12em;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation (Fixed) -->
+    <!-- 添加了 id="main-nav" 并移除了 mix-blend-difference，加入 duration-500 确保动画丝滑 -->
+    <nav id="main-nav" class="fixed top-0 w-full z-50 px-6 md:px-8 py-6 flex items-center justify-between text-white transition-all duration-500">
+        <button id="menu-btn" class="flex items-center gap-3 text-[10px] tracking-[0.2em] hover:opacity-70 transition-opacity z-10">
+            <i data-lucide="menu" class="w-5 h-5 stroke-[1.5]"></i>
+            <span class="hidden md:inline font-medium mt-0.5">MENU</span>
+        </button>
+
+        <div class="absolute left-1/2 -translate-x-1/2 flex items-center flex-col cursor-pointer w-full max-w-[200px]">
+            <i data-lucide="hexagon" class="w-6 h-6 stroke-[1]"></i>
+            <!-- 移除了 hidden，加入了手机端的字号和间距微调，确保始终显示 -->
+            <span class="text-[7px] md:text-[9px] tracking-[0.15em] md:tracking-[0.3em] mt-1.5 font-medium text-center whitespace-nowrap">AUS PACIFIC RESOURCES</span>
+        </div>
+
+        <button class="flex items-center gap-3 text-[10px] tracking-[0.2em] hover:opacity-70 transition-opacity z-10">
+            <i data-lucide="user" class="w-4 h-4 stroke-[1.5]"></i>
+            <span class="hidden md:inline font-medium mt-0.5">PORTAL</span>
+        </button>
+    </nav>
+
+    <!-- Split-Panel Navigation Overlay (RR Style) -->
+    <div id="nav-overlay" class="fixed inset-0 z-[100] flex">
+
+        <!-- Left panel: menu -->
+        <div class="nav-left w-full md:w-[42%] flex-shrink-0 bg-[#080808] flex flex-col relative">
+            <!-- Close button top-left -->
+            <button id="nav-close" class="absolute top-7 left-8 flex items-center gap-2.5 text-[10px] tracking-[0.25em] text-white/50 hover:text-white transition-colors duration-300">
+                <i data-lucide="x" class="w-4 h-4 stroke-[1.5]"></i>
+                <span class="font-medium">CLOSE</span>
+            </button>
+
+            <!-- Nav links vertically centered -->
+            <nav class="flex flex-col justify-center flex-1 px-12 md:px-16 gap-1 mt-16 mb-16">
+                <a href="#section-2" data-close class="nav-overlay-link py-3 text-2xl md:text-3xl hero-title text-white tracking-[0.12em]">THE VISION</a>
+                <a href="#section-3" data-close class="nav-overlay-link py-3 text-2xl md:text-3xl hero-title text-white tracking-[0.12em]">EXTRACTION</a>
+                <a href="#section-4" data-close class="nav-overlay-link py-3 text-2xl md:text-3xl hero-title text-white tracking-[0.12em]">SMELTING</a>
+                <a href="#section-5" data-close class="nav-overlay-link py-3 text-2xl md:text-3xl hero-title text-white tracking-[0.12em]">GLOBAL TRADE</a>
+                <a href="#section-6" data-close class="nav-overlay-link py-3 text-2xl md:text-3xl hero-title text-white tracking-[0.12em]">ESG</a>
+            </nav>
+
+            <!-- Bottom info -->
+            <div class="px-12 md:px-16 pb-10 flex gap-8 text-[8px] tracking-[0.3em] text-white/20 uppercase font-medium">
+                <span>Melbourne, VIC</span>
+                <span>Est. 2001</span>
+                <span>Global Operations</span>
+            </div>
+        </div>
+
+        <!-- Vertical divider -->
+        <div class="hidden md:block w-px bg-white/10 flex-shrink-0"></div>
+
+        <!-- Right panel: preview video -->
+        <div class="nav-right hidden md:flex flex-1 relative overflow-hidden">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover scale-105">
+                <source src="res/video/the_vision_compressed.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-black/35"></div>
+
+            <!-- Logo centered top -->
+            <div class="absolute top-7 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <i data-lucide="hexagon" class="w-5 h-5 stroke-[1] text-white/70"></i>
+                <span class="text-[7px] tracking-[0.3em] text-white/40 mt-1.5 font-medium uppercase whitespace-nowrap">Aus Pacific Resources</span>
+            </div>
+
+            <!-- Contact top-right -->
+            <div class="absolute top-7 right-10">
+                <a href="#" class="text-[9px] tracking-[0.2em] text-white/40 hover:text-white uppercase font-medium transition-colors duration-300">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Side Navigation Dots -->
+    <div class="fixed left-8 top-1/2 -translate-y-1/2 z-50 flex-col gap-5 hidden lg:flex mix-blend-difference">
+        <a href="#section-1" class="nav-dot active" data-index="0"></a>
+        <a href="#section-2" class="nav-dot" data-index="1"></a>
+        <a href="#section-3" class="nav-dot" data-index="2"></a>
+        <a href="#section-4" class="nav-dot" data-index="3"></a>
+        <a href="#section-5" class="nav-dot" data-index="4"></a>
+        <a href="#section-6" class="nav-dot" data-index="5"></a>
+    </div>
+
+    <!-- MAIN CONTENT SCROLL CONTAINER -->
+    <main class="w-full relative">
+        
+        <!-- SECTION 1: HERO (Full Screen) -->
+        <section id="section-1" class="snap-panel relative h-screen w-full flex items-center justify-center overflow-hidden">
+            <video id="hero-video" autoplay muted playsinline class="absolute inset-0 w-full h-full object-cover z-0" style="opacity:1; transition: opacity 1.2s ease;">
+                <source src="res/video/the_vision_compressed.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 video-overlay z-10"></div>
+            
+            <div class="relative z-20 text-center flex flex-col items-center px-4 w-full mt-12 is-visible">
+                <p class="text-[9px] tracking-[0.55em] text-white/70 mb-8 font-medium uppercase hero-text-shadow fade-in-up">A Legacy of Resources</p>
+                <h1 class="text-4xl lg:text-6xl xl:text-8xl hero-title text-white mb-10 max-w-4xl hero-text-shadow fade-in-up delay-100">
+                    EMPOWERING GLOBAL RESOURCES.
+                </h1>
+                <p class="text-[9px] md:text-[10px] tracking-[0.4em] text-white/70 font-medium uppercase mb-12 hero-text-shadow fade-in-up delay-200">
+                    Setting the standard for precision and industrial excellence across generations.
+                </p>
+                <div class="fade-in-up delay-300">
+                    <button class="bg-white text-black px-10 py-4 rounded-full text-[9px] md:text-[10px] font-semibold tracking-[0.2em] uppercase luxury-button hover:scale-105 transition-transform">
+                        EXPLORE OUR OPERATIONS
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+                <i data-lucide="chevron-down" class="text-white/50 w-6 h-6"></i>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE VISION (Full Screen Panel — text bottom-left) -->
+        <section id="section-2" class="snap-panel relative h-screen w-full overflow-hidden flex items-end">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+                <source src="res/video/vision_bg.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 z-10 panel-overlay-bottom"></div>
+
+            <div class="relative z-20 px-8 md:px-16 lg:px-24 pb-16 md:pb-24 max-w-3xl">
+                <p class="text-[9px] tracking-[0.55em] text-white/40 mb-6 font-medium uppercase fade-in-up">The Vision</p>
+                <h2 class="text-4xl lg:text-5xl xl:text-7xl hero-title text-white mb-10 hero-text-shadow fade-in-up delay-100 leading-[1.05]">
+                    INSTITUTIONAL<br>RIGOR.<br>GLOBAL ARTERIES.
+                </h2>
+                <div class="flex items-center gap-8 fade-in-up delay-200">
+                    <button class="border border-white/30 text-white px-8 py-3 rounded-full text-[9px] tracking-[0.2em] uppercase luxury-button hover:bg-white hover:text-black">
+                        OUR HERITAGE
+                    </button>
+                    <span class="text-[9px] tracking-[0.3em] text-white/30 uppercase hidden md:block">Melbourne · Est. 2001</span>
+                </div>
+            </div>
+
+            <div class="absolute bottom-10 right-10 z-20 text-right hidden md:block">
+                <p class="text-[8px] tracking-[0.3em] text-white/20 uppercase">02 / 06</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: EXTRACTION (Full Screen Panel — text center-left) -->
+        <section id="section-3" class="snap-panel relative h-screen w-full overflow-hidden flex items-center">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+                <source src="res/video/extraction_bg.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 z-10 panel-overlay-left"></div>
+
+            <div class="relative z-20 px-8 md:px-16 lg:px-24 max-w-2xl">
+                <p class="text-[9px] tracking-[0.55em] text-white/40 mb-6 font-medium uppercase fade-in-up">01 // Extraction</p>
+                <h2 class="text-4xl lg:text-5xl xl:text-7xl hero-title text-white mb-8 hero-text-shadow fade-in-up delay-100 leading-[1.05]">
+                    QUALITY<br>SOURCED FROM<br>THE BEDROCK.
+                </h2>
+                <p class="text-[9px] md:text-[10px] tracking-[0.45em] text-white/35 font-medium uppercase hero-text-shadow fade-in-up delay-200">
+                    Western Australia &nbsp;·&nbsp; Tier-1 Bauxite &nbsp;·&nbsp; High-Grade
+                </p>
+            </div>
+
+            <div class="absolute bottom-10 right-10 z-20 text-right hidden md:block">
+                <p class="text-[8px] tracking-[0.3em] text-white/20 uppercase">03 / 06</p>
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- SECTION 4: SMELTING (Sticky Left Text, Scroll Right Image - Alternating) -->
+        <section id="section-4" class="py-24 md:py-40 px-6 md:px-12 lg:px-24 bg-ausblack">
+            <div class="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-start">
+                
+                <!-- Media Container (Scrolls past) -->
+                <div class="lg:col-span-7 editorial-media overflow-hidden aspect-[4/3] lg:aspect-video order-2 lg:order-1">
+                    <video autoplay loop muted playsinline class="w-full h-full object-cover" poster="res/img/factory_poster.jpg">
+                        <source src="res/video/smelting_bg.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Text Container (Sticky on Desktop) -->
+                <div class="lg:col-span-5 lg:sticky top-1/3 space-y-8 is-visible order-1 lg:order-2">
+                    <p class="text-[10px] tracking-[0.4em] text-zinc-400 font-medium uppercase fade-in-up">02 // Joint Venture Smelting</p>
+                    <h2 class="text-3xl lg:text-4xl xl:text-5xl luxury-title text-white fade-in-up delay-100 leading-tight">
+                        RESHAPING VALUE. <br>EMPOWERING INDUSTRY.
+                    </h2>
+                    <p class="text-sm text-zinc-300 luxury-text fade-in-up delay-200">
+                        Bridging the value chain from raw ore to pure metal through strategic Joint Venture partnerships in top-tier Asia-Pacific facilities. Transforming raw resources into the foundational materials of modern manufacturing.
+                    </p>
+                    <div class="pt-6 fade-in-up delay-300">
+                        <a href="#" class="text-[10px] tracking-[0.2em] font-semibold uppercase border-b border-white pb-1 hover:text-zinc-400 hover:border-zinc-400 transition-colors">
+                            View Capabilities
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- GALLERY: Horizontal Drag Scroll -->
+        <section id="section-gallery" class="pt-24 md:pt-32 pb-0 bg-ausblack overflow-hidden">
+            <div class="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24 mb-12 is-visible">
+                <div class="flex items-end justify-between">
+                    <div>
+                        <p class="text-[10px] tracking-[0.4em] text-zinc-400 font-medium uppercase mb-4 fade-in-up">The Operations</p>
+                        <h2 class="text-3xl lg:text-4xl xl:text-5xl luxury-title text-white fade-in-up delay-100">FROM GROUND TO GLOBAL.</h2>
+                    </div>
+                    <p class="text-[9px] tracking-[0.35em] text-zinc-600 uppercase hidden md:flex items-center gap-2 pb-1 fade-in-up delay-200">
+                        <i data-lucide="move-horizontal" class="w-3 h-3"></i>&nbsp;Drag to explore
+                    </p>
+                </div>
+            </div>
+
+            <div id="gallery-track" class="flex gap-3 px-6 md:px-12 lg:px-24 pb-24 overflow-x-auto cursor-grab">
+
+                <!-- 01 Extraction -->
+                <div class="gallery-card flex-shrink-0 w-64 md:w-80 h-[480px] md:h-[560px] relative overflow-hidden bg-zinc-900">
+                    <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                        <source src="res/video/quarry.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <p class="text-[8px] tracking-[0.3em] text-zinc-500 uppercase mb-1.5">01 / Extraction</p>
+                        <p class="text-sm luxury-title text-white">Open Pit<br>Mining</p>
+                    </div>
+                </div>
+
+                <!-- 02 Processing -->
+                <div class="gallery-card flex-shrink-0 w-64 md:w-80 h-[480px] md:h-[560px] relative overflow-hidden bg-zinc-900">
+                    <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                        <source src="res/video/conveyor.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <p class="text-[8px] tracking-[0.3em] text-zinc-500 uppercase mb-1.5">02 / Processing</p>
+                        <p class="text-sm luxury-title text-white">Ore Conveyor<br>Systems</p>
+                    </div>
+                </div>
+
+                <!-- 03 Smelting -->
+                <div class="gallery-card flex-shrink-0 w-64 md:w-80 h-[480px] md:h-[560px] relative overflow-hidden bg-zinc-900">
+                    <img src="res/img/smelting.jpg" class="w-full h-full object-cover" alt="Smelting">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <p class="text-[8px] tracking-[0.3em] text-zinc-500 uppercase mb-1.5">03 / Smelting</p>
+                        <p class="text-sm luxury-title text-white">Joint Venture<br>Smelting</p>
+                    </div>
+                </div>
+
+                <!-- 04 Shipping -->
+                <div class="gallery-card flex-shrink-0 w-64 md:w-80 h-[480px] md:h-[560px] relative overflow-hidden bg-zinc-900">
+                    <img src="res/img/maritime.jpg" class="w-full h-full object-cover" alt="Maritime Logistics">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <p class="text-[8px] tracking-[0.3em] text-zinc-500 uppercase mb-1.5">04 / Shipping</p>
+                        <p class="text-sm luxury-title text-white">Maritime<br>Logistics</p>
+                    </div>
+                </div>
+
+                <!-- 05 Delivery -->
+                <div class="gallery-card flex-shrink-0 w-64 md:w-80 h-[480px] md:h-[560px] relative overflow-hidden bg-zinc-900">
+                    <img src="res/img/port_delivery.jpg" class="w-full h-full object-cover" alt="Asia Pacific Markets">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <p class="text-[8px] tracking-[0.3em] text-zinc-500 uppercase mb-1.5">05 / Delivery</p>
+                        <p class="text-sm luxury-title text-white">Asia Pacific<br>Markets</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- SECTION: PORTFOLIO (Sticky Left Text, Scrolling Right Media) -->
+        <section id="section-portfolio" class="bg-ausblack">
+            <div class="max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-24">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+
+                    <!-- Left: Sticky text -->
+                    <div class="lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center py-24 lg:py-0 is-visible">
+                        <p class="text-[10px] tracking-[0.4em] text-zinc-400 font-medium uppercase mb-6 fade-in-up">Our Portfolio</p>
+                        <h2 class="text-4xl lg:text-5xl xl:text-6xl luxury-title text-white fade-in-up delay-100 leading-tight mb-8">
+                            ASSETS OF<br>DISTINCTION.
+                        </h2>
+                        <p class="text-sm text-zinc-300 luxury-text fade-in-up delay-200">
+                            World-class extraction sites and processing facilities across the Asia Pacific. From the red earth of Western Australia to the smelting heartlands of the East — each asset a testament to engineering precision and industrial scale.
+                        </p>
+                        <div class="mt-10 fade-in-up delay-300">
+                            <a href="#" class="text-[10px] tracking-[0.2em] font-semibold uppercase border-b border-white pb-1 hover:text-zinc-400 hover:border-zinc-400 transition-colors">
+                                View All Projects
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Scrolling media stack -->
+                    <div class="py-0 lg:py-32 space-y-3">
+
+                        <div>
+                            <div class="editorial-media overflow-hidden aspect-[3/4]">
+                                <video data-lazy-video loop muted playsinline preload="none" class="w-full h-full object-cover">
+                                    <source data-src="res/video/the_vision_compressed.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="flex justify-between text-[8px] tracking-[0.25em] text-zinc-600 uppercase px-1 pt-3 pb-10">
+                                <span>Tier-1 Bauxite</span><span>Western Australia</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="editorial-media overflow-hidden aspect-[3/4]">
+                                <video data-lazy-video loop muted playsinline preload="none" class="w-full h-full object-cover">
+                                    <source data-src="res/video/quarry.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="flex justify-between text-[8px] tracking-[0.25em] text-zinc-600 uppercase px-1 pt-3 pb-10">
+                                <span>Open Pit Operations</span><span>Scale &amp; Precision</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="editorial-media overflow-hidden aspect-[3/4]">
+                                <video data-lazy-video loop muted playsinline preload="none" class="w-full h-full object-cover">
+                                    <source data-src="res/video/smelting_bg.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="flex justify-between text-[8px] tracking-[0.25em] text-zinc-600 uppercase px-1 pt-3 pb-10">
+                                <span>Joint Venture Smelting</span><span>Asia Pacific</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="editorial-media overflow-hidden aspect-[3/4]">
+                                <video data-lazy-video loop muted playsinline preload="none" class="w-full h-full object-cover">
+                                    <source data-src="res/video/shipping_compressed.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="flex justify-between text-[8px] tracking-[0.25em] text-zinc-600 uppercase px-1 pt-3">
+                                <span>Maritime Logistics</span><span>Global Network</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- SECTION 5: TRADE (Grid Layout / Data Focus) -->
+        <section id="section-5" class="py-24 md:py-40 px-6 md:px-12 lg:px-24 bg-ausgray">
+            <div class="max-w-screen-2xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-20 is-visible">
+                    <p class="text-[10px] tracking-[0.4em] text-zinc-400 font-medium uppercase mb-6 fade-in-up">03 // Global Commodities Trading</p>
+                    <h2 class="text-3xl lg:text-4xl xl:text-5xl luxury-title text-white mb-8 fade-in-up delay-100">GLOBAL NETWORK. <br>PRECISION DELIVERY.</h2>
+                    <p class="text-zinc-400 text-sm luxury-text fade-in-up delay-200">Relying on a highly integrated maritime logistics network and strict international customs compliance. Delivering millions of tonnes of metallurgical ores and mineral commodities safely and precisely to major industrial hubs worldwide.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Stat Card 1 -->
+                    <div class="border border-white/5 bg-[#050505] p-10 hover:border-white/20 transition-colors">
+                        <i data-lucide="ship" class="w-8 h-8 text-white/50 mb-8"></i>
+                        <h4 class="text-3xl font-light mb-2">Asia Pacific</h4>
+                        <p class="text-xs tracking-[0.2em] font-mono text-zinc-500 mb-6">PRIMARY DESTINATIONS</p>
+                        <p class="text-sm text-zinc-300 luxury-text">Seamless maritime logistics routes ensuring uninterrupted supply to the world's fastest-growing industrial centers.</p>
+                    </div>
+                    
+                    <!-- Media Card 2 -->
+                    <div class="editorial-media overflow-hidden border border-white/5 h-64 md:h-auto">
+                        <video autoplay loop muted playsinline class="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 transition-all duration-700" poster="res/img/ship_poster.jpg">
+                            <source src="res/video/shipping_compressed.mp4" type="video/mp4">
+                        </video>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="border border-white/5 bg-[#050505] p-10 hover:border-white/20 transition-colors">
+                        <i data-lucide="file-check" class="w-8 h-8 text-white/50 mb-8"></i>
+                        <h4 class="text-3xl font-light mb-2">Tier-1</h4>
+                        <p class="text-xs tracking-[0.2em] font-mono text-zinc-500 mb-6">COMPLIANCE & CLEARANCE</p>
+                        <p class="text-sm text-zinc-300 luxury-text">Rigorous international customs and metallurgical specifications, guaranteeing uncompromised quality upon arrival.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- SECTION 6: ESG & GOVERNANCE (Parallax Finale) -->
+        <section id="section-6" class="relative py-40 md:py-64 flex items-center justify-center bg-fixed bg-center bg-cover" style="background-image: url('res/img/esg_forest.jpg');">
+            <!-- Dark overlay for readability -->
+            <div class="absolute inset-0 bg-ausblack/60 backdrop-blur-[2px]"></div>
+            
+            <div class="relative z-20 text-center px-6 max-w-4xl mx-auto is-visible">
+                <p class="text-[10px] md:text-xs tracking-[0.4em] text-white/50 mb-6 font-medium uppercase fade-in-up">Governance & ESG</p>
+                <h2 class="text-3xl lg:text-4xl xl:text-5xl luxury-title text-white mb-8 fade-in-up delay-100 leading-tight">
+                    THE RESPONSIBILITY OF CAPITAL.<br>THE PROMISE TO THE LAND.
+                </h2>
+                <p class="text-sm md:text-base text-zinc-300 luxury-text mb-16 fade-in-up delay-200">
+                    Executing the strictest modern corporate governance standards, backed by the deep commercial heritage of FarEast Enterprise. We place Environmental, Social, and Governance (ESG) at the forefront of every blast, every smelt, and every cross-ocean voyage. True strength stems from reverence for natural resources.
+                </p>
+                
+                <div class="border border-white/20 p-6 md:p-8 backdrop-blur-md bg-black/40 inline-block fade-in-up delay-300">
+                    <p class="text-[9px] md:text-[10px] tracking-[0.3em] font-mono text-zinc-400 mb-3">⌖ 37.8136° S, 144.9631° E</p>
+                    <p class="text-xs tracking-[0.2em] font-medium text-white uppercase">HEADQUARTERS: MELBOURNE, VICTORIA</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- CONTACT US -->
+        <section id="section-contact" class="py-24 md:py-40 px-6 md:px-12 lg:px-24 bg-ausblack">
+            <div class="max-w-screen-2xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+                    <!-- Left: Heading -->
+                    <div class="is-visible">
+                        <p class="text-[10px] tracking-[0.4em] text-zinc-400 font-medium uppercase mb-6 fade-in-up">Get In Touch</p>
+                        <h2 class="text-4xl lg:text-5xl xl:text-6xl luxury-title text-white fade-in-up delay-100 leading-tight">
+                            CONTACT<br>US.
+                        </h2>
+                        <p class="text-sm text-zinc-300 luxury-text mt-8 max-w-sm fade-in-up delay-200">
+                            For enquiries regarding commodity trading, joint venture partnerships, or investment opportunities, our team is available to assist.
+                        </p>
+                    </div>
+
+                    <!-- Right: Contact details -->
+                    <div class="is-visible space-y-10">
+
+                        <div class="fade-in-up border-t border-white/5 pt-8">
+                            <p class="text-[9px] tracking-[0.4em] text-zinc-600 uppercase font-medium mb-3">Email</p>
+                            <a href="mailto:dan@auspacificresources.com.au" class="text-lg md:text-xl font-light text-white hover:text-zinc-400 transition-colors duration-300 tracking-wide">
+                                dan@auspacificresources.com.au
+                            </a>
+                        </div>
+
+                        <div class="fade-in-up delay-100 border-t border-white/5 pt-8">
+                            <p class="text-[9px] tracking-[0.4em] text-zinc-600 uppercase font-medium mb-3">Address</p>
+                            <p class="text-lg md:text-xl font-light text-white tracking-wide">
+                                Level 13, 350 Queen Street<br>
+                                <span class="text-zinc-400">Melbourne, VIC 3000</span>
+                            </p>
+                        </div>
+
+                        <div class="fade-in-up delay-200 border-t border-white/5 pt-8">
+                            <p class="text-[9px] tracking-[0.4em] text-zinc-600 uppercase font-medium mb-3">Phone</p>
+                            <a href="tel:+6196004159" class="text-lg md:text-xl font-light text-white hover:text-zinc-400 transition-colors duration-300 tracking-wide">
+                                +61 9600 4159
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Minimalist Footer -->
+    <footer class="bg-ausblack py-12 border-t border-white/5 text-center px-6">
+        <div class="max-w-screen-2xl mx-auto flex flex-col items-center justify-center">
+            <i data-lucide="hexagon" class="w-8 h-8 stroke-[1] text-white/30 mb-6"></i>
+            <div class="flex gap-8 mb-8 text-[9px] tracking-[0.2em] font-medium uppercase text-zinc-500">
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms</a>
+                <a href="#section-contact" class="hover:text-white transition-colors">Contact</a>
+            </div>
+            <p class="text-[9px] text-white/30 tracking-[0.2em] font-medium uppercase">
+                A SUBSIDIARY OF FAREAST ENTERPRISE &copy; 2026. ALL RIGHTS RESERVED.
+            </p>
+        </div>
+    </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // Full-screen navigation toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const navOverlay = document.getElementById('nav-overlay');
+        const navClose = document.getElementById('nav-close');
+
+        menuBtn.addEventListener('click', () => {
+            navOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+
+        const closeNav = () => {
+            navOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        navClose.addEventListener('click', closeNav);
+        document.querySelectorAll('[data-close]').forEach(link => {
+            link.addEventListener('click', closeNav);
+        });
+
+        // Hero video smooth loop (fade out near end, fade in on restart)
+        const heroVideo = document.getElementById('hero-video');
+        heroVideo.playbackRate = 0.8;
+        const FADE_OUT_START = 1.8; // seconds before end to begin fade
+
+        heroVideo.addEventListener('timeupdate', () => {
+            if (!heroVideo.duration) return;
+            const remaining = heroVideo.duration - heroVideo.currentTime;
+            if (remaining <= FADE_OUT_START) {
+                heroVideo.style.opacity = Math.max(0, (remaining / FADE_OUT_START) * 0.9).toFixed(3);
+            }
+        });
+
+        heroVideo.addEventListener('ended', () => {
+            heroVideo.style.transition = 'none';
+            heroVideo.style.opacity = '0';
+            heroVideo.currentTime = 0;
+            heroVideo.play().then(() => { heroVideo.playbackRate = 0.8; });
+            requestAnimationFrame(() => {
+                heroVideo.style.transition = 'opacity 1.2s ease';
+                heroVideo.style.opacity = '0.9';
+            });
+        });
+
+        // Lazy-load portfolio videos — inject src on first enter, then play/pause
+        const lazyVideos = document.querySelectorAll('[data-lazy-video]');
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                if (entry.isIntersecting) {
+                    // First time: move data-src → src and load
+                    video.querySelectorAll('source[data-src]').forEach(s => {
+                        s.src = s.dataset.src;
+                        s.removeAttribute('data-src');
+                    });
+                    if (video.readyState === 0) video.load();
+                    video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.1 });
+        lazyVideos.forEach(v => videoObserver.observe(v));
+
+        // Gallery drag-to-scroll
+        const galleryTrack = document.getElementById('gallery-track');
+        let isDragging = false, dragStartX, dragScrollLeft;
+
+        galleryTrack.addEventListener('mousedown', e => {
+            isDragging = true;
+            galleryTrack.classList.add('is-grabbing');
+            dragStartX = e.pageX - galleryTrack.offsetLeft;
+            dragScrollLeft = galleryTrack.scrollLeft;
+        });
+        galleryTrack.addEventListener('mouseleave', () => { isDragging = false; galleryTrack.classList.remove('is-grabbing'); });
+        galleryTrack.addEventListener('mouseup', () => { isDragging = false; galleryTrack.classList.remove('is-grabbing'); });
+        galleryTrack.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - galleryTrack.offsetLeft;
+            galleryTrack.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+        });
+
+        // 导航栏毛玻璃下拉渐变动效
+        const mainNav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                // 向下滚动时：加上毛玻璃、背景色、底边框，并缩小高度
+                mainNav.classList.add('bg-ausblack/70', 'backdrop-blur-md', 'py-4', 'border-b', 'border-white/10', 'shadow-2xl');
+                mainNav.classList.remove('py-6');
+            } else {
+                // 回到顶部时：恢复完全透明
+                mainNav.classList.remove('bg-ausblack/70', 'backdrop-blur-md', 'py-4', 'border-b', 'border-white/10', 'shadow-2xl');
+                mainNav.classList.add('py-6');
+            }
+        });
+
+        // Intersection Observer for scroll animations AND nav dots
+        const sections = document.querySelectorAll('section');
+        const dots = document.querySelectorAll('.nav-dot');
+
+        const observerOptions = {
+            root: null, // null means it uses the viewport now (since we removed overflow hidden from body)
+            rootMargin: '0px',
+            threshold: 0.3 // Trigger when 30% of the section is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Trigger text fade-in animations
+                    entry.target.classList.add('is-visible');
+
+                    // Update navigation dots
+                    dots.forEach(dot => dot.classList.remove('active'));
+                    const index = Array.from(sections).indexOf(entry.target);
+                    if(dots[index]) {
+                        dots[index].classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
